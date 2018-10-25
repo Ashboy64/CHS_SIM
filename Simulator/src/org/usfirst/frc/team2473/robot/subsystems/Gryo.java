@@ -17,14 +17,26 @@ public class Gryo extends Subsystem {
 	
 	public AnalogGyro gyro = new AnalogGyro(RobotMap.ANALOG_GYRO.value);
 	
-	public void bigYeet() {
-		GryoCommand g = new GryoCommand();
-		g.start();
+//	public void bigYeet() {
+//		GryoCommand g = new GryoCommand();
+//		g.start();
+//	}
+	
+	public String name() {
+		return gyro.getName();
+	}
+	
+	public int center() {
+		return gyro.getCenter();
+	}
+	
+	public double angle() {
+		return gyro.getAngle();
 	}
 	
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
-        //setDefaultCommand(new MySpecialCommand());
+        setDefaultCommand(new GryoCommand());
     }
 }
 

@@ -1,6 +1,6 @@
 package org.usfirst.frc.team2473.robot.commands;
 
-import org.usfirst.frc.team2473.robot.subsystems.Gryo;
+import org.usfirst.frc.team2473.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
 
@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.command.Command;
  */
 public class GryoCommand extends Command {
 
-	public Gryo g = new Gryo();
 
     public GryoCommand() {
         // Use requires() here to declare subsystem dependencies
@@ -18,14 +17,15 @@ public class GryoCommand extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	g.gyro.calibrate();
+    	requires(Robot.bigG);
+    	Robot.bigG.gyro.calibrate();
+    	System.out.println(Robot.bigG.name());
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	System.out.println(g.gyro.getName());
-    	System.out.println(g.gyro.getCenter());
-    	System.out.println(g.gyro.getAngle());
+    	System.out.println(Robot.bigG.center());
+    	System.out.println(Robot.bigG.angle());
     }
 
     // Make this return true when this Command no longer needs to run execute()

@@ -10,7 +10,7 @@ public class Parsing1 {
 	}
 	public static void parseRobot(String variable, String function) throws FileNotFoundException {
 		Scanner scan = new Scanner(new File("/Users/Angela/git/CHS_SIM/Simulator/src/org/usfirst/frc/team2473/robot/Robot.java"));
-		String type = "n";
+		String type = "";
 		boolean found = false;
 		while(scan.hasNextLine() && !found) {
 			String line = scan.nextLine();
@@ -33,4 +33,4 @@ public class Parsing1 {
 		System.out.println(type);
 	}
 	
-}
+} 

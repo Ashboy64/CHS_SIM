@@ -3,7 +3,7 @@ package org.usfirst.frc.team2473.robot.subsystems;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import org.usfirst.frc.team2473.robot.RobotMap;
-import org.usfirst.frc.team2473.robot.commands.TankDrive;
+import org.usfirst.frc.team2473.robot.commands.TankDrive; 
 
 /**
  *
@@ -28,3 +28,9 @@ public class DriveTrain extends Subsystem {
     }
 }
 
+
+public void act(String code) {
+	
+	HashMap<String, String> map = new HashMap<>();
+	
+}

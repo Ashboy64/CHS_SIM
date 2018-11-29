@@ -4,12 +4,14 @@ import java.util.Scanner;
 import java.util.StringTokenizer;
 
 public class Parsing1 {
+	
+	public static String robotPath = "";
 
 	public static void main(String[] args) throws FileNotFoundException {
 		parseRobot("driveTrain","");
 	}
 	public static void parseRobot(String variable, String function) throws FileNotFoundException {
-		Scanner scan = new Scanner(new File("/Angela/git/CHS_SIM/Simulator/src/org/usfirst/frc/team2473/robot/Robot.java"));
+		Scanner scan = new Scanner(new File(robotPath));
 		String type = " ";
 		boolean found = false;
 		while(scan.hasNextLine() && !found) {
@@ -30,7 +32,9 @@ public class Parsing1 {
 				}
 			}
 		}
-		System.out.println(type);
+		egg(type,function);
 	}
-	
+	public static void egg(String cl, String func) {
+		
+	}
 } 

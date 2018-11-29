@@ -144,6 +144,8 @@ class Writer {
                     "    public List<AxleInfo> axleInfos; // the information about each individual axle\n" +
                     "    public float maxMotorTorque; // maximum torque the motor can apply to wheel\n" +
                     "    public float maxSteeringAngle; // maximum steer angle the wheel can have\n" +
+                    "    public float torqueMultiplier; // Multiplier for torque\n" +
+                    "    public float rpmMultiplier; // Multiplier for torque\n" +
                     "\n" +
                     "    public void FixedUpdate()\n" +
                     "    {\n" +
@@ -159,7 +161,15 @@ class Writer {
 
                 if(function.equals("set")) {
                     String[] params = (String[]) sparkToSet.get("params");
-                    buffer += "                axleInfo." + config.get(component) + ".motorTorque = " + params[0] + ";\n";
+
+                    buffer += "                float target" + config.get(component) + "RPM = " + params[0] + "; // fill in with code\n" +
+                    "                if (axleInfo." + config.get(component) + ".rpm >= rpmMultiplier*target" + config.get(component) + "RPM){\n"+
+                    "                    axleInfo." + config.get(component) + ".motorTorque = maxMotorTorque;\n" +
+                    "                } else {\n"+
+                    "                    axleInfo." + config.get(component) + ".motorTorque = 0;\n" +
+                    "                }\n";
+
+//                    buffer += "                axleInfo." + config.get(component) + ".motorTorque = torqueMultiplier*" + params[0] + ";\n";
                 }
             }
 

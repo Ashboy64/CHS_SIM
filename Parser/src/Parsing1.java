@@ -9,7 +9,7 @@ public class Parsing1 {
 		parseRobot("driveTrain","");
 	}
 	public static void parseRobot(String variable, String function) throws FileNotFoundException {
-		Scanner scan = new Scanner(new File("/Users/Angela/git/CHS_SIM/Simulator/src/org/usfirst/frc/team2473/robot/Robot.java"));
+		Scanner scan = new Scanner(new File("/Angela/git/CHS_SIM/Simulator/src/org/usfirst/frc/team2473/robot/Robot.java"));
 		String type = " ";
 		boolean found = false;
 		while(scan.hasNextLine() && !found) {

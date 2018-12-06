@@ -73,7 +73,7 @@ public class Parsing1 {
 			System.out.println(e.getMessage());
 		}
 		
-		System.out.println(code);
-		return code;
+		//System.out.println(code);
+		//return code;
 	}
 } 

@@ -19,18 +19,12 @@ public class DriveTrain extends Subsystem {
     }
     
     public void setSpeed(double leftVal, double rightVal){
-    	leftMotor.set(leftVal);
-    	rightMotor.set(rightVal);
+    	leftMotor.set(1);
+    	rightMotor.set(1);
     } 
     
     public void initDefaultCommand() {
         setDefaultCommand(new TankDrive());
     }
-}
 
-
-public void act(String code) {
-	
-	HashMap<String, String> map = new HashMap<>();
-	
 }

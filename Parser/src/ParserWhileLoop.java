@@ -8,17 +8,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.regex.*;
 
 
-public class Parser {
+public class ParserWhileLoop {
 
     static String[] availableTypes = new String[]{"Spark"};
     Map<String, String> config;
-    Writer w;
-    boolean goingToWriteToFile = false;
+    WhileWriter w;
 
-    public Parser() {
+    public ParserWhileLoop() {
         Yaml yaml = new Yaml();
         InputStream inputStream = this.getClass()
                 .getClassLoader()
@@ -26,75 +24,12 @@ public class Parser {
         config = (Map<String, String>) yaml.load(inputStream);
         System.out.println(config);
 
-        w = new Writer(config);
+        w = new WhileWriter(config);
     }
 
-    public void encodeFunction(String func, String robotPath) {
-        File file = new File(robotPath);
-        Scanner input;
-        String code = "";
-        try {
-            input = new Scanner(file);
-            String line;
-            boolean reading = false;
-            int paren = 0;
-            while(input.hasNextLine()) {
-                line = input.nextLine();
-                if(line.contains(func) && (line.contains("{") || line.contains("}"))) {
-                    reading = true;
-                }
-                if(reading) {
-                    while(Character.isWhitespace(line.charAt(0))) {
-                        line = line.substring(1);
-                        code += "\t";
-                    }
-                    code += line + "\n";
-                    for(char c : line.toCharArray()) {
-                        if(c == '{') {
-                            paren++;
-                        }else if(c == '}') {
-                            paren--;
-                        }
-                    }
-                    if(paren == 0) {
-                        break;
-                    }
-                }
-            }
-            input.close();
-        }catch(IOException e) {
-            System.out.println(e.getMessage());
-        }
 
-        if(!goingToWriteToFile) {
-            act(code, robotPath, true);
-            goingToWriteToFile = true;
-        } else {
-            writeFunction(code, robotPath, new ArrayList<String>(), false);
-        }
-    }
-
-    // TODO
-    public void writeFunction(String code, String subsystemFilePath, ArrayList<String> params, boolean writeToFile) {
-        for(String param : params) {
-            evalVariable(param);
-        }
-        act(code, subsystemFilePath, writeToFile);
-    }
-
-    // TODO
-    public Object evalVariable(String param){
-        return new Object();
-    }
-
-    // TODO
-    public boolean evaluateBooleanExpr(String expr) {
-        return false;
-    }
-
-    public void act(String code, String subsystemFileName, boolean writeToFile) {
+    public void act(String code, String subsystemFileName) {
         // Read DriveTrain.java to get attributes mapped to their type. attributeToType is this map.
-
 
         HashMap<String, String> attributeToType = new HashMap<>();
 
@@ -103,35 +38,6 @@ public class Parser {
 
             while (scan.hasNext()) {
                 String line = scan.nextLine();
-
-                if(line.contains("while") && line.contains("{")) {
-                    Pattern pattern = Pattern.compile("'*'");
-                    Matcher matcher = pattern.matcher(line);
-
-                    if (matcher.find()) {
-                        System.out.println(matcher.group(1));
-                        String booleanExpr = matcher.group(1);
-
-                        boolean toRun = evaluateBooleanExpr(booleanExpr);
-                        while(toRun) {
-
-                            String whileContent = "";
-
-                            while(scan.hasNextLine()){
-                                String nextLine = scan.nextLine();
-                                if(!nextLine.contains("}")) {
-                                    whileContent += nextLine;
-                                } else {
-                                    break;
-                                }
-                            }
-
-                            act(whileContent, subsystemFileName, false);
-
-                            toRun = evaluateBooleanExpr(booleanExpr);
-                        }
-                    }
-                }
 
                 for (String type : availableTypes) {
                     if (!line.contains("(") && !line.contains(")") && (line.contains("public") || line.contains("private")) && line.contains(type)) {
@@ -153,13 +59,18 @@ public class Parser {
                 }
             }
 
-            // System.out.println(attributeToType);
+//            System.out.println(attributeToType);
 
             // Parse code and write to c
             Scanner codeScan = new Scanner(code);
 
             while (codeScan.hasNext()) {
                 String line = codeScan.nextLine().trim();
+
+                // ISSUE: What if they name a variable ending with "while"
+                if(line.contains("while(") || line.contains("while (")){
+
+                }
 
                 for (String attribute : attributeToType.keySet()) {
                     if (line.contains(attribute)) {
@@ -198,9 +109,7 @@ public class Parser {
                 }
             }
 
-            if(writeToFile) {
-                writeToC();
-            }
+            writeToC();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -212,14 +121,13 @@ public class Parser {
     }
 }
 
-
-class Writer {
+class WhileWriter {
 
     private FileWriter f;
     ArrayList<Map<String, Object>> sparksSet = new ArrayList<>();
     Map<String, String> config;
 
-    public Writer(Map<String, String> config) {
+    public WhileWriter(Map<String, String> config) {
         this.config = config;
         try {
             f = new FileWriter(new File("Controller1.cs"));
@@ -260,11 +168,11 @@ class Writer {
                     String[] params = (String[]) sparkToSet.get("params");
 
                     buffer += "                float target" + config.get(component) + "RPM = " + params[0] + "; // fill in with code\n" +
-                    "                if (axleInfo." + config.get(component) + ".rpm <= rpmMultiplier*target" + config.get(component) + "RPM){\n"+
-                    "                    axleInfo." + config.get(component) + ".motorTorque = maxMotorTorque;\n" +
-                    "                } else {\n"+
-                    "                    axleInfo." + config.get(component) + ".motorTorque = 0;\n" +
-                    "                }\n";
+                            "                if (axleInfo." + config.get(component) + ".rpm >= rpmMultiplier*target" + config.get(component) + "RPM){\n"+
+                            "                    axleInfo." + config.get(component) + ".motorTorque = maxMotorTorque;\n" +
+                            "                } else {\n"+
+                            "                    axleInfo." + config.get(component) + ".motorTorque = 0;\n" +
+                            "                }\n";
                 }
             }
 

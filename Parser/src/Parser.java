@@ -86,7 +86,7 @@ public class Parser {
     public Object evalVariable(String param){
         return new Object();
     }
-
+    
     // TODO
     public boolean evaluateBooleanExpr(String expr) {
         return false;

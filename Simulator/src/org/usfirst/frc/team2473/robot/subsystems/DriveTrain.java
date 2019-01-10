@@ -21,7 +21,14 @@ public class DriveTrain extends Subsystem {
     public void setSpeed(double leftVal, double rightVal){
     	leftMotor.set(1);
     	rightMotor.set(1);
-    } 
+
+    	int i = 1;
+    	int a;
+    	double b = 1.0;
+    	double c;
+    	boolean trueVal = true;
+    	boolean idk;
+    }
     
     public void initDefaultCommand() {
         setDefaultCommand(new TankDrive());

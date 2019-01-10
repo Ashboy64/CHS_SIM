@@ -4,10 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.*;
 
 
@@ -17,6 +14,8 @@ public class Parser {
     Map<String, String> config;
     Writer w;
     boolean goingToWriteToFile = false;
+    Map<String, Object> varValues;
+    ArrayList<String> supportedTypes = new ArrayList<>();
 
     public Parser() {
         Yaml yaml = new Yaml();
@@ -27,9 +26,90 @@ public class Parser {
         System.out.println(config);
 
         w = new Writer(config);
+        supportedTypes.addAll(Arrays.asList(new String[]{"int", "double", "boolean"}));
+
+        varValues = new HashMap<String, Object>();
+    }
+
+    public void initVars(String func, String robotPath){
+        File file = new File(robotPath);
+        Scanner input;
+        try {
+            input = new Scanner(file);
+            String line;
+            boolean reading = false;
+            int paren = 0;
+            while(input.hasNextLine()) {
+                line = input.nextLine();
+                if(line.contains(func) && (line.contains("{") || line.contains("}"))) {
+                    reading = true;
+                }
+                if(reading) {
+                    line = line.trim();
+                    String[] declaration = line.split(" ");
+                    System.out.println("array: " + Arrays.toString(declaration));
+                    // int i = 10;
+                    // int i;
+                    if(supportedTypes.contains(declaration[0])){
+                        if(declaration.length > 2){
+                            String value = declaration[3].substring(0, declaration[3].length()-1);
+                            String type = declaration[0];
+
+                            switch(type){
+                                case "int":
+                                    varValues.put(declaration[1], Integer.parseInt(value));
+                                    break;
+                                case "double":
+                                    varValues.put(declaration[1], Double.parseDouble(value));
+                                    break;
+                                case "boolean":
+                                    varValues.put(declaration[1], Boolean.parseBoolean(value));
+                                    break;
+                                default:
+                                    varValues.put(declaration[1], new Object());
+                            }
+
+                        } else {
+                            String type = declaration[0];
+                            String name = declaration[1].substring(0, declaration[1].length()-1);
+                            switch(type){
+                                case "int":
+                                    varValues.put(name, 0);
+                                    break;
+                                case "double":
+                                    varValues.put(name, 0.0);
+                                    break;
+                                case "boolean":
+                                    varValues.put(name, false);
+                                    break;
+                                default:
+                                    varValues.put(name, new Object());
+                            }
+                        }
+                    }
+
+                    for(char c : line.toCharArray()) {
+                        if(c == '{') {
+                            paren++;
+                        }else if(c == '}') {
+                            paren--;
+                        }
+                    }
+                    if(paren == 0) {
+                        break;
+                    }
+                }
+            }
+            input.close();
+        }catch(IOException e) {
+            System.out.println(e.getMessage());
+        }
+
+        System.out.println(varValues.toString());
     }
 
     public void encodeFunction(String func, String robotPath) {
+        initVars(func, robotPath);
         File file = new File(robotPath);
         Scanner input;
         String code = "";
@@ -44,20 +124,22 @@ public class Parser {
                     reading = true;
                 }
                 if(reading) {
-                    while(Character.isWhitespace(line.charAt(0))) {
-                        line = line.substring(1);
-                        code += "\t";
-                    }
-                    code += line + "\n";
-                    for(char c : line.toCharArray()) {
-                        if(c == '{') {
-                            paren++;
-                        }else if(c == '}') {
-                            paren--;
+                    if (!line.isEmpty()) {
+                        while (Character.isWhitespace(line.charAt(0))) {
+                            line = line.substring(1);
+                            code += "\t";
                         }
-                    }
-                    if(paren == 0) {
-                        break;
+                        code += line + "\n";
+                        for (char c : line.toCharArray()) {
+                            if (c == '{') {
+                                paren++;
+                            } else if (c == '}') {
+                                paren--;
+                            }
+                        }
+                        if (paren == 0) {
+                            break;
+                        }
                     }
                 }
             }

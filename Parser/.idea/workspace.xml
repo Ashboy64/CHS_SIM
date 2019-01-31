@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ce162ca7-6928-4aa0-9a52-8c8bfc6655ef" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/snakeyaml_1_5.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/snakeyaml_1_5.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Parser.java" afterDir="false" />
-    </list>
+    <list default="true" id="ce162ca7-6928-4aa0-9a52-8c8bfc6655ef" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/bin/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -18,8 +14,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Parser.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="195" column="25" selection-start-line="195" selection-start-column="25" selection-end-line="195" selection-end-column="25" />
+            <state relative-caret-position="187">
+              <caret line="223" column="28" lean-forward="true" selection-start-line="223" selection-start-column="28" selection-end-line="223" selection-end-column="28" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -114,7 +110,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1548904192374" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1548906308324" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../Javaluator-v3.0.2/javaluator-3.0.2.jar!/" />
     <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.0" />
@@ -260,8 +256,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Parser.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="195" column="25" selection-start-line="195" selection-start-column="25" selection-end-line="195" selection-end-column="25" />
+        <state relative-caret-position="187">
+          <caret line="223" column="28" lean-forward="true" selection-start-line="223" selection-start-column="28" selection-end-line="223" selection-end-column="28" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>

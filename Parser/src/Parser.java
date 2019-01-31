@@ -259,6 +259,25 @@ public class Parser {
             while (scan.hasNext()) {
                 String line = scan.nextLine();
 
+                if(line.contains("if") && line.contains("(") && line.contains(")") && line.contains("{")) {
+                    int num_parentheses = 1;
+                    String if_statement_code = "";
+
+                    while(scan.hasNext()){
+                        String code_line = scan.nextLine();
+
+                        if_statement_code += code_line;
+                        for(int i = 0; i < code_line.length(); i++){
+                            String token = "" + code_line.charAt(i);
+                            if(token.equals("}")){
+                                num_parentheses--;
+                            } else if(token.equals("{")){
+                                num_parentheses++;
+                            }
+                        }
+                    }
+                }
+
                 if(line.contains("while") && line.contains("{")) {
                     Pattern pattern = Pattern.compile("'*'");
                     Matcher matcher = pattern.matcher(line);

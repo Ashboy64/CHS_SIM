@@ -1,3 +1,4 @@
+import com.fathzer.soft.javaluator.DoubleEvaluator;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
@@ -16,6 +17,8 @@ public class Parser {
     boolean goingToWriteToFile = false;
     Map<String, Object> varValues;
     ArrayList<String> supportedTypes = new ArrayList<>();
+    DoubleEvaluator doubleEvaluator = new DoubleEvaluator();
+
 
     public Parser() {
         Yaml yaml = new Yaml();
@@ -29,6 +32,26 @@ public class Parser {
         supportedTypes.addAll(Arrays.asList(new String[]{"int", "double", "boolean"}));
 
         varValues = new HashMap<String, Object>();
+    }
+
+    public void updateVars(String line){
+        String[] lineArr = line.trim().split(" ");
+        // thingamajig++;
+        // thingamajig = 1;
+        // e += 1;
+        // e *= 1;
+        //
+        if(lineArr.length > 0) {
+            String name = lineArr[0];
+
+            if (varValues.containsKey(name)){
+                if (lineArr[1] == "=") {
+
+                }
+
+
+            }
+        }
     }
 
     public void initVars(String func, String robotPath){
@@ -47,7 +70,6 @@ public class Parser {
                 if(reading) {
                     line = line.trim();
                     String[] declaration = line.split(" ");
-                    System.out.println("array: " + Arrays.toString(declaration));
                     // int i = 10;
                     // int i;
                     if(supportedTypes.contains(declaration[0])){
@@ -169,8 +191,59 @@ public class Parser {
         return new Object();
     }
 
+    //TODO
+    public Object evalExpr(ArrayList<String> expr){
+        String expr_string = "";
+
+        for(String token : expr){
+            expr_string += " " + token;
+        }
+
+        return doubleEvaluator.evaluate(expr_string);
+    }
+
     // TODO
     public boolean evaluateBooleanExpr(String expr) {
+        Scanner scan = new Scanner(expr);
+
+        // model: expr = i > 1
+        ArrayList<String> left = new ArrayList<>();
+        ArrayList<String> right = new ArrayList<>();
+        String operator = "";
+
+        while(scan.hasNext()){
+            String token = scan.next();
+            if(token.equals(">") || token.equals("<") || token.equals("==") || token.equals("!=") || token.equals(">=") || token.equals("<=")){
+                operator = token;
+                break;
+            } else {
+                left.add(token);
+            }
+        }
+
+        while(scan.hasNext()){
+            String token = scan.next();
+            right.add(token);
+        }
+
+        if(!operator.equals("")){
+            Object left_value = evalExpr(left);
+            Object right_value = evalExpr(right);
+        }
+
+        switch (operator){
+            case ">":
+                break;
+            case "<":
+                break;
+            case "==":
+                break;
+            case ">=":
+                break;
+            case "<=":
+                break;
+        }
+
         return false;
     }
 

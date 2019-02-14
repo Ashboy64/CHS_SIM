@@ -19,8 +19,11 @@ public class DriveTrain extends Subsystem {
     }
     
     public void setSpeed(double leftVal, double rightVal){
-    	leftMotor.set(1);
-    	rightMotor.set(1);
+
+    	for (int i = 0 ; i < 2 ; i++){
+			leftMotor.set(1);
+			rightMotor.set(1);
+		}
 
     	int i = 1;
     	int a;

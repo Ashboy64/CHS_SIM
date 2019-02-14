@@ -36,11 +36,6 @@ public class Parser {
 
     public void updateVars(String line){
         String[] lineArr = line.trim().split(" ");
-        // thingamajig++;
-        // thingamajig = 1;
-        // e += 1;
-        // e *= 1;
-        //
         if(lineArr.length > 0) {
             String name = lineArr[0];
 
@@ -227,21 +222,21 @@ public class Parser {
         }
 
         if(!operator.equals("")){
-            Object left_value = evalExpr(left);
-            Object right_value = evalExpr(right);
-        }
+            Double left_value = (Double)evalExpr(left);
+            Double right_value = (Double)evalExpr(right);
 
-        switch (operator){
-            case ">":
-                break;
-            case "<":
-                break;
-            case "==":
-                break;
-            case ">=":
-                break;
-            case "<=":
-                break;
+            switch (operator){
+                case ">":
+                    return left_value > right_value;
+                case "<":
+                    return left_value < right_value;
+                case "==":
+                    return left_value.equals(right_value);
+                case ">=":
+                    return left_value >= right_value;
+                case "<=":
+                    return left_value <= right_value;
+            }
         }
 
         return false;
@@ -250,6 +245,7 @@ public class Parser {
     public void act(String code, String subsystemFileName, boolean writeToFile) {
         // Read DriveTrain.java to get attributes mapped to their type. attributeToType is this map.
 
+        System.out.println("Code: " + code);
 
         HashMap<String, String> attributeToType = new HashMap<>();
 
@@ -258,54 +254,6 @@ public class Parser {
 
             while (scan.hasNext()) {
                 String line = scan.nextLine();
-
-                if(line.contains("if") && line.contains("(") && line.contains(")") && line.contains("{")) {
-                    int num_parentheses = 1;
-                    String if_statement_code = "";
-
-                    while(scan.hasNext()){
-                        String code_line = scan.nextLine();
-
-                        if_statement_code += code_line;
-                        for(int i = 0; i < code_line.length(); i++){
-                            String token = "" + code_line.charAt(i);
-                            if(token.equals("}")){
-                                num_parentheses--;
-                            } else if(token.equals("{")){
-                                num_parentheses++;
-                            }
-                        }
-                    }
-                }
-
-                if(line.contains("while") && line.contains("{")) {
-                    Pattern pattern = Pattern.compile("'*'");
-                    Matcher matcher = pattern.matcher(line);
-
-                    if (matcher.find()) {
-                        System.out.println(matcher.group(1));
-                        String booleanExpr = matcher.group(1);
-
-                        boolean toRun = evaluateBooleanExpr(booleanExpr);
-                        while(toRun) {
-
-                            String whileContent = "";
-
-                            while(scan.hasNextLine()){
-                                String nextLine = scan.nextLine();
-                                if(!nextLine.contains("}")) {
-                                    whileContent += nextLine;
-                                } else {
-                                    break;
-                                }
-                            }
-
-                            act(whileContent, subsystemFileName, false);
-
-                            toRun = evaluateBooleanExpr(booleanExpr);
-                        }
-                    }
-                }
 
                 for (String type : availableTypes) {
                     if (!line.contains("(") && !line.contains(")") && (line.contains("public") || line.contains("private")) && line.contains(type)) {
@@ -334,6 +282,72 @@ public class Parser {
 
             while (codeScan.hasNext()) {
                 String line = codeScan.nextLine().trim();
+
+                if(line.matches(".*for.*")){
+                    Scanner forScanner = new Scanner(line);
+
+                    while(forScanner.hasNext()){
+                        if(forScanner.next().equals("for")){
+                            break;
+                        }
+                    }
+
+                    // now at the while loop. we need to call act the required number of times.
+                    // we assume the for loop to be structured as for (int i = 0; i < k; i++)
+
+                    int firstBound = 0;
+
+                    while(forScanner.hasNext()){
+                        try{
+                            String x = forScanner.next();
+                            firstBound = Integer.parseInt(x);
+                            break;
+                        } catch (NumberFormatException e){
+                        }
+                    }
+
+                    int secondBound = 0;
+
+                    while(forScanner.hasNext()){
+                        try{
+                            secondBound = Integer.parseInt(forScanner.next());
+                            break;
+                        } catch (NumberFormatException e){
+                        }
+                    }
+
+                    // Extract block of code inside the for loop
+                    String forBody = "";
+                    while(codeScan.hasNext()){
+                        int numParantheses = 1;
+
+                        String scanLineRaw = codeScan.nextLine();
+                        String scanLine = scanLineRaw.trim();
+
+//                        System.out.println("scanLine: " + scanLine);
+
+                        for(int i = 0; i < scanLine.length(); i++){
+                            if(scanLine.charAt(i) == '}'){
+                                numParantheses--;
+                            }
+
+                            if(scanLine.charAt(i) == '{'){
+                                numParantheses++;
+                            }
+                        }
+                        if(numParantheses == 0){
+                            break;
+                        } else {
+                            forBody+=scanLine;
+                        }
+                    }
+
+                    System.out.println("First bound: " + firstBound);
+                    System.out.println("Second bound: " + secondBound);
+                    for(int i = firstBound; i < secondBound; i++){
+                        act(forBody, subsystemFileName, !writeToFile);
+                    }
+                }
 
                 for (String attribute : attributeToType.keySet()) {
                     if (line.contains(attribute)) {
@@ -383,6 +397,11 @@ public class Parser {
 
     private void writeToC() {
         w.writeToFile();
+        try {
+            w.getF().close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
 
@@ -457,7 +476,7 @@ class Writer {
                     "    public bool steering; // does this wheel apply steer angle?\n" +
                     "}");
 
-            f.close();
+//            f.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -480,5 +499,9 @@ class Writer {
 
             sparksSet.add(toAppend);
         }
+    }
+
+    public FileWriter getF(){
+        return f;
     }
 }

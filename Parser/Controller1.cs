@@ -16,6 +16,12 @@ public class Controller1 : MonoBehaviour {
 
         foreach (AxleInfo axleInfo in axleInfos) {
             if (axleInfo.motor) {
+                float targetrightWheelRPM = 1; // fill in with code
+                if (axleInfo.rightWheel.rpm <= rpmMultiplier*targetrightWheelRPM){
+                    axleInfo.rightWheel.motorTorque = maxMotorTorque;
+                } else {
+                    axleInfo.rightWheel.motorTorque = 0;
+                }
                 float targetleftWheelRPM = 1; // fill in with code
                 if (axleInfo.leftWheel.rpm <= rpmMultiplier*targetleftWheelRPM){
                     axleInfo.leftWheel.motorTorque = maxMotorTorque;
@@ -27,6 +33,12 @@ public class Controller1 : MonoBehaviour {
                     axleInfo.rightWheel.motorTorque = maxMotorTorque;
                 } else {
                     axleInfo.rightWheel.motorTorque = 0;
+                }
+                float targetleftWheelRPM = 1; // fill in with code
+                if (axleInfo.leftWheel.rpm <= rpmMultiplier*targetleftWheelRPM){
+                    axleInfo.leftWheel.motorTorque = maxMotorTorque;
+                } else {
+                    axleInfo.leftWheel.motorTorque = 0;
                 }
             }
         }
